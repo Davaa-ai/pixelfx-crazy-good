@@ -1,7 +1,7 @@
 // Shared by the tools: find effects, render their frames, lay frames out, write PNG, GIF and MP4.
 
 import { readdirSync, existsSync, statSync, writeFileSync, mkdirSync } from "node:fs";
-import { join, dirname, relative, sep } from "node:path";
+import { join, dirname, relative, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
 import { createFrame, clearFrame, createFx, createAct, actBounds, actTiming, composite, painterFor, drawActor, stockActor, backdrop, actorAlphaOf } from "../../src/core/index.js";
@@ -9,7 +9,8 @@ import { rasterText, textWidth } from "../../src/core/font.js";
 import { encodePNG } from "./png.mjs";
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-export const FX_DIR = join(ROOT, "src", "fx");
+// PIXELFX_FX_DIR points the tools at another folder of effects (anime/run.mjs uses it); unset, nothing changes.
+export const FX_DIR = process.env.PIXELFX_FX_DIR ? resolve(process.env.PIXELFX_FX_DIR) : join(ROOT, "src", "fx");
 
 /** Every effect id ("fire/torch"), sorted. Files starting with _ are helpers, not effects. */
 export function allIds(dir = FX_DIR) {
