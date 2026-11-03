@@ -1,8 +1,6 @@
 // Attachment Hearts: four hovering hearts side by side, each with a surge to set off, over the pack in the shared studio.
 
-import { effects, categories, HEART_PAL } from "../fx/index.js";
-import { framing } from "./framing.js";
-import { boot } from "../../gallery/studio.js";
+import { start } from "../../gallery/frame.js";
 
 const SURGE_PAIRS = {
   magnetic: ["magnetic/magnetic-heart", "magnetic/magnetic-pull"],
@@ -11,7 +9,7 @@ const SURGE_PAIRS = {
   luminous: ["luminous/luminous-heart", "luminous/radiant-bloom"],
 };
 
-function lineup(mount, { Player, FX_BY_ID, open, onFrame, el }) {
+function lineup(mount, { Player, FX_BY_ID, open, onFrame, el }, categories, framing) {
   const relics = [];
   const row = el("div", { className: "lineup" });
 
@@ -76,18 +74,12 @@ function lineup(mount, { Player, FX_BY_ID, open, onFrame, el }) {
   });
 }
 
-boot({
+start({
   collection: "hearts",
   title: "attachment hearts.",
-  mark: `<svg viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true"><rect x="1" y="2" width="4" height="3" fill="#383247"/><rect x="6" y="2" width="4" height="3" fill="#ff8d29"/><rect y="3" width="5" height="3" fill="#5ab0eb"/><rect x="6" y="3" width="5" height="3" fill="#dc2f72"/><rect x="5" y="3" width="1" height="5" fill="#fff"/><rect x="1" y="6" width="4" height="2" fill="#dc2f72"/><rect x="6" y="6" width="4" height="2" fill="#ffd166"/><rect x="3" y="8" width="5" height="2" fill="#ffedb0"/><rect x="5" y="10" width="1" height="1" fill="#fff"/></svg>`,
   lede: "“Чамайг юу татдаг вэ? Чи юунаас зугтдаг вэ?” {n} faceted pixel art effects across the four attachment hearts: hovering relics, and the surge that wakes each one.",
-  effects,
-  categories: categories.map((c) => ({ ...c, kicker: `${c.mn} · ${c.style}` })),
-  framing,
-  palettes: HEART_PAL,
   palettesName: "HEART_PAL",
   packPath: "./attachment-hearts/fx/index.js",
-  hero: lineup,
   suggestions: ["magnetic", "polar", "luminous", "surge"],
   links: [
     { label: "Sheets", href: "../sheets/index.json" },
@@ -96,4 +88,14 @@ boot({
   corePath: "./src/core/index.js",
   effectPath: (id) => `./attachment-hearts/fx/${id}.js`,
   sourceUrl: (id) => `../fx/${id}.js`,
+  load: async () => {
+    const [{ effects, categories, HEART_PAL }, { framing }] = await Promise.all([import("../fx/index.js"), import("./framing.js")]);
+    return {
+      effects,
+      categories: categories.map((c) => ({ ...c, kicker: `${c.mn} · ${c.style}` })),
+      framing,
+      palettes: HEART_PAL,
+      hero: (mount, api) => lineup(mount, api, categories, framing),
+    };
+  },
 });

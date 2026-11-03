@@ -4,7 +4,6 @@
 import { effects, groups } from "./fx/index.js";
 import { createFrame, clearFrame, createFx, composite, backdrop } from "../../src/core/index.js";
 import { BLOOD, VIOLET } from "./lib/shared.js";
-import { mountCollections } from "../../gallery/collections.js";
 
 const PALETTES = {
   sanguine: BLOOD,
@@ -401,7 +400,24 @@ addEventListener("keydown", (e) => {
   }
 });
 
-mountCollections($("#packs"), "sanguine", "pack-pill");
+// deep links, and the go-to-anything palette landing here
+function openFromHash() {
+  const raw = decodeURIComponent(location.hash.slice(1));
+  const tile = tiles.find((t) => t.id === raw);
+  if (tile) openDetail(tile);
+  else if (raw) document.getElementById(raw)?.scrollIntoView();
+}
+addEventListener("hashchange", openFromHash);
+addEventListener("pixelfx:open", (e) => {
+  const tile = tiles.find((t) => t.id === e.detail.id);
+  if (tile) openDetail(tile);
+});
+addEventListener("pixelfx:jump", (e) => {
+  if (dlg.open) dlg.close();
+  if (e.detail.id) document.getElementById(e.detail.id)?.scrollIntoView();
+  else scrollTo(0, 0);
+});
+setTimeout(openFromHash);
 
 resize();
 restartAll();

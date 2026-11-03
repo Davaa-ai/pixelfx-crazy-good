@@ -78,6 +78,10 @@
   .mark { width: 36px; height: 46px; flex: none; image-rendering: pixelated; margin-top: 4px; }
   h1 { margin: 0; font: 400 52px/62px var(--display); color: var(--ink); }
   .sub { margin: 4px 0 0; font: 400 16px/1.45 var(--text); color: var(--quiet); max-width: 60ch; text-wrap: balance; }
+  .lab-nav { display: flex; align-items: center; gap: 4px; }
+  .lab-nav .coll-btn { width: auto; padding-inline: 8px; background: var(--surface); font: 500 12px/1 var(--mono); }
+  .lab-nav .coll-btn > .coll-mark { display: none; }
+  #pager { max-width: 1280px; margin: 0 auto 48px; }
   .head-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; }
 
   .packs {
@@ -303,6 +307,12 @@
     }
   }
 </style>
+<link rel="stylesheet" href="../../gallery/nav.css">
+<script type="module" blocking="render">
+  import { mountNav } from "../../gallery/nav.js";
+  import { MANIFEST } from "../../gallery/manifest.js";
+  mountNav({ collection: "sanguine", host: document.querySelector("#packs"), pager: document.querySelector("#pager"), manifest: MANIFEST });
+</script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to arcana</a>
@@ -322,7 +332,7 @@
     </div>
   </div>
   <div class="head-nav">
-    <nav class="packs" id="packs" aria-label="Collections"></nav>
+    <div class="lab-nav"><div id="packs"></div><button class="coll-btn lab-go" type="button" data-palette>Go to anything</button></div>
   </div>
 </header>
 
@@ -351,6 +361,7 @@
 </div>
 
 <main id="main"></main>
+<div id="pager"></div>
 
 <footer>
   Self-contained lab in <code>labs/sanguine-arcana/</code> importing only <code>src/core</code>. Click any card or omen to inspect frames, copy code, or download its sprite sheet.

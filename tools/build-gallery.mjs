@@ -15,14 +15,15 @@ mkdirSync(PAGE, { recursive: true });
 
 await build({ entryPoints: [join(G, "app.js")], bundle: true, format: "esm", minify: true, outfile: join(OUT, "app.js"), legalComments: "none", define: { __PIXELFX_STANDALONE__: "true" } });
 cpSync(join(G, "fonts"), join(OUT, "fonts"), { recursive: true });
-writeFileSync(join(OUT, "style.css"), readFileSync(join(G, "style.css")));
+const STYLE = readFileSync(join(G, "style.css"), "utf8").replace("@import url(nav.css);", readFileSync(join(G, "nav.css"), "utf8"));
+writeFileSync(join(OUT, "style.css"), STYLE);
 writeFileSync(join(OUT, "index.html"), readFileSync(join(G, "index.html")));
 
 // the one-page version: <title> and <style> first, then the body markup, the font as a data URI
 const html = readFileSync(join(G, "index.html"), "utf8");
 const body = html.slice(html.indexOf("<!--BODY-->") + 11, html.indexOf("<!--/BODY-->"));
 const font = readFileSync(join(G, "fonts", "PatchPixel-Regular.woff2")).toString("base64");
-const css = readFileSync(join(G, "style.css"), "utf8").replace("url(fonts/PatchPixel-Regular.woff2)", `url(data:font/woff2;base64,${font})`);
+const css = STYLE.replace("url(fonts/PatchPixel-Regular.woff2)", `url(data:font/woff2;base64,${font})`);
 writeFileSync(
   join(PAGE, "index.html"),
   [

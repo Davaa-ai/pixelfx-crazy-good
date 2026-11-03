@@ -3,8 +3,9 @@
 
 import { createFrame, clearFrame, createFx, actTiming, composite, PAL, BACKDROPS, toHex } from "../src/core/index.js";
 import { Player, isScreen } from "./player.js";
-import { icon, iconSvg } from "./icons.js";
-import { mountCollections } from "./collections.js";
+import { icon } from "./icons.js";
+import { searchable, score } from "./search.js";
+import { remember } from "./nav.js";
 
 const $ = (s, root = document) => root.querySelector(s);
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -32,177 +33,6 @@ function store(key, value) {
   return null;
 }
 
-const SHORTCUTS = [
-  ["Browsing", [["/", "Search"], ["← ↑ → ↓", "Move between effects"], ["Enter", "Open effect"], ["K", "Pause or play all motion"], ["?", "This list"]]],
-  ["Inspecting", [["Space", "Play or pause"], [", .", "Step one frame"], ["← →", "Previous or next effect"], ["R", "Replay"], ["M", "Mirror"], ["C", "Character"], ["O", "Origin"], ["G", "Pixel grid"], ["+ −", "Zoom"], ["L", "Copy link"], ["Esc", "Back to effects"]]],
-];
-
-function shell(cfg) {
-  return `
-<a class="skip" href="#sections">Skip to effects</a>
-<div class="app">
-  <div class="rail">
-    <header class="top">
-      <a class="brand" href="./" aria-label="${cfg.title}, back to top">${cfg.mark}<span>${cfg.title}</span></a>
-      <div class="search">
-        ${iconSvg("search")}
-        <input id="q" type="search" placeholder="Search effects" aria-label="Search effects" autocomplete="off" spellcheck="false" enterkeyhint="search">
-        <kbd id="q-kbd" aria-hidden="true">/</kbd>
-        <button class="ghost q-clear" id="q-clear" type="button" aria-label="Clear search" hidden>${iconSvg("close")}</button>
-      </div>
-      <button class="ghost browse" id="browse" type="button" popovertarget="side" aria-label="Browse and filter">${iconSvg("browse")}<span class="dot" id="browse-dot" hidden></span></button>
-    </header>
-    <aside class="side" id="side" popover aria-label="Browse and filter">
-      <div class="side-title">
-        <h2>Browse</h2>
-        <button class="ghost" type="button" popovertarget="side" popovertargetaction="hide" aria-label="Close">${iconSvg("close")}</button>
-      </div>
-      <div class="seg type" id="types" role="group" aria-label="Filter by kind">
-        <button type="button" data-type="all" aria-pressed="true">All</button>
-        <button type="button" data-type="loop" aria-pressed="false">Loops</button>
-        <button type="button" data-type="oneshot" aria-pressed="false">One-shots</button>
-        <button type="button" data-type="acted" aria-pressed="false" title="Performed by a character: wind-up, hit-stop, recovery">Acted</button>
-      </div>
-      <nav class="cats" id="cats" aria-label="Categories"></nav>
-      <div class="side-foot">
-        <button class="row-btn" id="motion" type="button" aria-pressed="false"><span id="motion-ico"></span><span id="motion-label">Pause motion</span><kbd aria-hidden="true">K</kbd></button>
-        <label class="row-btn select-row"><span>Backdrop</span>
-          <select id="g-bg">
-            <option value="auto">Per effect</option>
-            <option value="dark">Dark</option>
-            <option value="ground">Ground</option>
-            <option value="sky">Sky</option>
-            <option value="light">Light</option>
-            <option value="black">Black</option>
-          </select>
-        </label>
-        <details class="colls" id="colls" hidden>
-          <summary>${iconSvg("chevron")}<span>Other collections</span></summary>
-          <nav id="coll-nav" aria-label="Collections"></nav>
-        </details>
-        <p class="links">${cfg.links.map((l) => `<a href="${l.href}" target="_blank" rel="noopener">${l.label}</a>`).join("")}<button class="link-btn" id="keys-open" type="button">Shortcuts</button></p>
-      </div>
-    </aside>
-  </div>
-  <main class="main" id="main">
-    <div class="status" id="status"></div>
-    <div id="hero"></div>
-    <div id="sections"></div>
-    <div class="empty" id="none" hidden></div>
-  </main>
-</div>
-
-<dialog class="studio" id="studio" aria-labelledby="d-name" closedby="closerequest">
-  <header class="s-top">
-    <button class="ghost s-back" id="d-close" type="button" title="Back to effects (Esc)">${iconSvg("prev")}<span>All effects</span></button>
-    <p class="s-crumb"><button class="link-btn" id="d-cat" type="button"></button><span aria-hidden="true">/</span><code id="d-id"></code></p>
-    <div class="s-nav">
-      <span class="s-pos" id="d-pos"></span>
-      <button class="ghost" id="d-prev" type="button" title="Previous effect (←)" aria-label="Previous effect">${iconSvg("prev")}</button>
-      <button class="ghost" id="d-next" type="button" title="Next effect (→)" aria-label="Next effect">${iconSvg("next")}</button>
-      <button class="ghost s-link" id="d-link" type="button" title="Copy a link to exactly this setup (L)">${iconSvg("link")}<span>Copy link</span></button>
-    </div>
-  </header>
-
-  <div class="s-work">
-    <div class="s-stage" id="big-wrap">
-      <canvas id="big" role="img"></canvas>
-      <div class="pixel-grid" id="d-grid" hidden aria-hidden="true"></div>
-      <div class="pivot" id="d-pivot-mark" hidden aria-hidden="true"></div>
-      <span class="s-badge" id="d-freeze" hidden>Hit-stop</span>
-    </div>
-
-    <div class="s-transport">
-      <button class="tool play" id="d-play" type="button" title="Play or pause (Space)" autofocus></button>
-      <button class="tool" id="d-back" type="button" title="Back one frame (,)" aria-label="Back one frame">${iconSvg("stepBack")}</button>
-      <button class="tool" id="d-fwd" type="button" title="Forward one frame (.)" aria-label="Forward one frame">${iconSvg("stepForward")}</button>
-      <button class="tool" id="d-again" type="button" title="Replay (R)" aria-label="Replay from the start">${iconSvg("replay")}</button>
-      <div class="timeline">
-        <div class="phases" id="d-phases" aria-hidden="true"></div>
-        <input class="scrub" id="d-scrub" type="range" min="0" max="30" value="0" step="1" aria-label="Frame">
-        <div class="marks" id="d-marks" aria-hidden="true"></div>
-      </div>
-      <output class="readout" id="d-time" for="d-scrub"></output>
-      <div class="seg speed" id="d-speed" role="group" aria-label="Playback speed"></div>
-      <div class="zoom" id="d-zoom" role="group" aria-label="Zoom">
-        <button class="tool" id="d-zoom-out" type="button" title="Zoom out (−)" aria-label="Zoom out">${iconSvg("minus")}</button>
-        <output id="d-zoom-val"></output>
-        <button class="tool" id="d-zoom-in" type="button" title="Zoom in (+)" aria-label="Zoom in">${iconSvg("plus")}</button>
-      </div>
-    </div>
-
-    <div class="s-panel" id="d-panel">
-      <div class="p-head">
-        <h2 id="d-name"></h2>
-        <p id="d-desc"></p>
-        <dl class="facts" id="d-facts"></dl>
-        <p class="tags" id="d-tags"></p>
-      </div>
-
-      <section class="p-sec" aria-labelledby="look-h">
-        <h3 id="look-h">Look</h3>
-        <fieldset class="bgs" id="d-bg"><legend>Backdrop</legend></fieldset>
-        <fieldset class="pals" id="d-pal-set"><legend>Palette <b id="d-pal-name"></b></legend><div class="pal-grid" id="d-pal"></div></fieldset>
-        <div class="toggles">
-          <button class="toggle" id="d-flip" type="button" aria-pressed="false" title="Mirror (M)">${iconSvg("mirror")}Mirror</button>
-          <button class="toggle" id="d-actor" type="button" aria-pressed="true" title="Character (C)">${iconSvg("person")}Character</button>
-          <button class="toggle" id="d-pivot" type="button" aria-pressed="false" title="Origin (O)">${iconSvg("origin")}Origin</button>
-          <button class="toggle" id="d-gridb" type="button" aria-pressed="false" title="Pixel grid (G)">${iconSvg("grid")}Grid</button>
-          <button class="toggle" id="d-seed" type="button" title="New random seed">${iconSvg("dice")}<span id="d-seed-val">Seed</span></button>
-        </div>
-      </section>
-
-      <section class="p-sec" aria-labelledby="use-h">
-        <h3 id="use-h">Use it</h3>
-        <div class="tabs" role="tablist" aria-label="Ways to use this effect">
-          <button id="tab-code" type="button" role="tab" aria-selected="true" aria-controls="pane-code">Code</button>
-          <button id="tab-sheet" type="button" role="tab" aria-selected="false" aria-controls="pane-sheet" tabindex="-1">Sprite sheet</button>
-          <span class="tabs-end">
-            <a class="link-btn" id="d-src" target="_blank" rel="noopener">Source</a>
-            <button class="tool label" id="d-copy" type="button">${iconSvg("copy")}<span>Copy</span></button>
-          </span>
-        </div>
-        <div class="pane" id="pane-code" role="tabpanel" aria-labelledby="tab-code" tabindex="0"><pre id="d-code"></pre></div>
-        <div class="pane" id="pane-sheet" role="tabpanel" aria-labelledby="tab-sheet" hidden>
-          <div class="sheet-prev" id="d-sheet"></div>
-          <p class="sheet-note" id="d-sheet-note"></p>
-          <div class="sheet-acts">
-            <button class="tool label primary" id="d-dl-png" type="button">${iconSvg("download")}<span>PNG</span></button>
-            <button class="tool label" id="d-dl-json" type="button">${iconSvg("download")}<span>JSON atlas</span></button>
-          </div>
-        </div>
-      </section>
-    </div>
-  </div>
-  <div class="sr-only" id="d-live" aria-live="polite"></div>
-</dialog>
-
-<dialog class="keys" id="keys" aria-labelledby="keys-h" closedby="any">
-  <header><h2 id="keys-h">Keyboard shortcuts</h2><button class="ghost" id="keys-close" type="button" aria-label="Close">${iconSvg("close")}</button></header>
-  <div class="keys-cols">${SHORTCUTS.map(([h, rows]) => `<section><h3>${h}</h3><dl>${rows.map(([k, v]) => `<dt><kbd>${k}</kbd></dt><dd>${v}</dd>`).join("")}</dl></section>`).join("")}</div>
-</dialog>`;
-}
-
-// Optimal string alignment distance, capped: enough to forgive a typo without matching everything.
-function typoDistance(a, b, cap = 2) {
-  if (Math.abs(a.length - b.length) > cap) return cap + 1;
-  let prev2 = null, prev = Array.from({ length: b.length + 1 }, (_, i) => i);
-  for (let i = 1; i <= a.length; i++) {
-    const row = [i];
-    let best = i;
-    for (let j = 1; j <= b.length; j++) {
-      let d = Math.min(prev[j] + 1, row[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
-      if (prev2 && i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d = Math.min(d, prev2[j - 2] + 1);
-      row.push(d);
-      if (d < best) best = d;
-    }
-    if (best > cap) return cap + 1;
-    prev2 = prev;
-    prev = row;
-  }
-  return prev[b.length];
-}
-
 export function boot(cfg) {
   const palettes = { ...cfg.palettes, ...PAL };
   const framing = cfg.framing ?? {};
@@ -211,51 +41,16 @@ export function boot(cfg) {
   const FX = Object.entries(cfg.effects).map(([id, mod]) => {
     const meta = { fps: 30, bg: "dark", loop: false, duration: 1, tags: [], options: {}, ...mod.meta };
     const cat = id.split("/")[0];
-    const name = meta.name.toLowerCase();
-    const tags = meta.tags.map((t) => t.toLowerCase());
-    const words = new Set([...name.split(/[^a-z0-9]+/), ...tags, cat].filter(Boolean));
-    return { id, cat, name: meta.name, lname: name, tags, words: [...words], desc: meta.desc.toLowerCase(), catName: (catMap[cat]?.name ?? "").toLowerCase(), mod: { ...mod, meta }, meta };
+    const catName = catMap[cat]?.name ?? "";
+    const s = searchable({ id, name: meta.name, tags: meta.tags, cat, catName, desc: meta.desc, loop: !!meta.loop, acted: !!mod.act });
+    return { id, cat, name: meta.name, s, mod: { ...mod, meta }, meta };
   });
   const FX_BY_ID = new Map(FX.map((f) => [f.id, f]));
-
-  document.body.querySelector("#app").innerHTML = shell(cfg);
-  document.title = cfg.pageTitle ?? document.title;
 
   const dlg = $("#studio"), wrap = $("#big-wrap"), big = $("#big");
   const state = { q: "", type: "all", cat: null, gridBg: "auto", paused: store("pixelfx.paused") === "1" || (store("pixelfx.paused") === null && reduced) };
   const tiles = [], sections = [], navLinks = new Map(), tileOf = new Map(), tileByLink = new WeakMap();
   const frameHooks = [];
-
-  // ---- search: best match first, and a typo still finds it
-  function termScore(fx, term) {
-    if (fx.lname === term) return 100;
-    const names = fx.lname.split(/[^a-z0-9]+/);
-    if (names[0] === term) return 90;
-    if (names[0].startsWith(term)) return 80;
-    if (names.includes(term)) return 75;
-    if (names.some((w) => w.startsWith(term))) return 65;
-    if (fx.tags.includes(term) || fx.cat === term || fx.catName === term) return 55;
-    if (fx.tags.some((t) => t.startsWith(term)) || fx.catName.startsWith(term)) return 40;
-    if (fx.lname.includes(term) || fx.id.includes(term)) return 30;
-    if ((term === "loop" || term === "loops") && fx.meta.loop) return 28;
-    if ((term === "acted" || term === "act") && fx.mod.act) return 28;
-    // a typo in a name or tag says more about what you meant than the same letters somewhere in a description
-    if (term.length >= 4) {
-      const allowed = term.length >= 7 ? 2 : 1;
-      if (fx.words.some((w) => typoDistance(term, w, allowed) <= allowed)) return 22;
-    }
-    return fx.desc.includes(term) ? 14 : 0;
-  }
-
-  function score(fx, terms) {
-    let total = 0;
-    for (const t of terms) {
-      const s = termScore(fx, t);
-      if (!s) return 0;
-      total += s;
-    }
-    return total;
-  }
 
   function matchesType(fx, type) {
     if (type === "acted") return !!fx.mod.act;
@@ -330,6 +125,7 @@ export function boot(cfg) {
 
   function buildSections() {
     const host = $("#sections");
+    host.replaceChildren();
     for (const c of cfg.categories) {
       const list = FX.filter((f) => f.cat === c.id);
       if (!list.length) continue;
@@ -409,6 +205,7 @@ export function boot(cfg) {
   // ---- sidebar
   function buildNav() {
     const nav = $("#cats");
+    nav.replaceChildren();
     const groups = cfg.groups ?? [{ label: null, ids: sections.map((s) => s.c.id) }];
     const grouped = new Set(groups.flatMap((g) => g.ids));
     const extra = sections.map((s) => s.c.id).filter((id) => !grouped.has(id));
@@ -458,7 +255,7 @@ export function boot(cfg) {
     for (const [cid, { a }] of navLinks) {
       if (cid === id) {
         a.setAttribute("aria-current", "true");
-        const box = $("#cats").closest(".side"), ar = a.getBoundingClientRect(), br = box.getBoundingClientRect();
+        const box = $("#cats"), ar = a.getBoundingClientRect(), br = box.getBoundingClientRect();
         if (box.scrollHeight > box.clientHeight && (ar.top < br.top + 8 || ar.bottom > br.bottom - 8)) {
           box.scrollTop += ar.top - br.top - br.height / 2;
         }
@@ -502,7 +299,7 @@ export function boot(cfg) {
     let poolAll = 0;
 
     for (const t of tiles) {
-      const s = searching ? score(t.fx, terms) : 1;
+      const s = searching ? score(t.fx.s, terms) : 1;
       const ok = s > 0 && matchesType(t.fx, state.type);
       if (ok) {
         pool.set(t.fx.cat, (pool.get(t.fx.cat) ?? 0) + 1);
@@ -523,6 +320,7 @@ export function boot(cfg) {
       for (const t of tiles) t.home.append(t.cell);
     }
     wasSearching = searching;
+    $("#pager").hidden = searching || state.type !== "all";
     resultsSec.hidden = !searching || !hits.length;
 
     for (const s of sections) {
@@ -601,7 +399,7 @@ export function boot(cfg) {
     };
     const asked = state.q.trim();
     const typeOnly = !asked;
-    const withoutType = asked && state.type !== "all" && FX.some((f) => score(f, terms) > 0);
+    const withoutType = asked && state.type !== "all" && FX.some((f) => score(f.s, terms) > 0);
     box.replaceChildren(
       el("h2", { textContent: typeOnly ? "Nothing fits those filters." : `Nothing for “${asked}”.` }),
       withoutType
@@ -755,6 +553,7 @@ export function boot(cfg) {
   }
 
   function loadEffect(fx, params) {
+    remember(cfg.collection, fx.id, fx.name);
     const prev = detail;
     const screen = isScreen(fx);
     const prevPal = palKey();
@@ -1154,6 +953,18 @@ export function boot(cfg) {
     return ok;
   }
 
+  // to a section, or the top with no id: leaves the inspector and any filter that would hide it
+  function jumpTo(id) {
+    clearSearch();
+    setType("all");
+    returnToTile = false;
+    if (dlg.open) dlg.close();
+    setTimeout(() => {
+      if (id) $(`#${CSS.escape(id)}`)?.scrollIntoView();
+      else scrollTo(0, 0);
+    }, 0);
+  }
+
   function wireStudio() {
     $("#d-close").addEventListener("click", closeStudio);
     dlg.addEventListener("cancel", (e) => {
@@ -1178,14 +989,7 @@ export function boot(cfg) {
       }
     });
 
-    $("#d-cat").addEventListener("click", () => {
-      const id = detail.fx.cat;
-      clearSearch();
-      setType("all");
-      returnToTile = false;
-      dlg.close();
-      setTimeout(() => $(`#${CSS.escape(id)}`)?.scrollIntoView(), 0);
-    });
+    $("#d-cat").addEventListener("click", () => jumpTo(detail.fx.cat));
     $("#d-link").addEventListener("click", (e) => copy(urlFor(detail.fx), e.currentTarget, "Link copied"));
     $("#d-prev").addEventListener("click", () => browse(-1));
     $("#d-next").addEventListener("click", () => browse(1));
@@ -1505,9 +1309,34 @@ export function boot(cfg) {
     });
   }
 
-  mountCollections($("#coll-nav"), cfg.collection).then((n) => {
-    if (n > 0) $("#colls").hidden = false;
+  addEventListener("pixelfx:open", (e) => {
+    const fx = FX_BY_ID.get(e.detail.id);
+    if (!fx) return;
+    if (dlg.open) {
+      loadEffect(fx);
+      syncUrl();
+    } else {
+      clearSearch();
+      setType("all");
+      openStudio(fx, { from: tileOf.get(fx) });
+    }
   });
+  addEventListener("pixelfx:jump", (e) => jumpTo(e.detail.id));
+
+  // Back from another collection lands where you left, whether or not the browser kept the page alive
+  const spot = `pixelfx.scroll:${location.pathname}`;
+  addEventListener("pagehide", () => {
+    try {
+      sessionStorage.setItem(spot, String(Math.round(scrollY)));
+    } catch {
+      // private windows and blocked storage just don't remember
+    }
+  });
+  try {
+    if (performance.getEntriesByType("navigation")[0]?.type === "back_forward") scrollTo(0, +sessionStorage.getItem(spot) || 0);
+  } catch {
+    // same
+  }
 
   $("#app").classList.add("ready");
   const { path } = parseHash();

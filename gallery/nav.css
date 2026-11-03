@@ -1,0 +1,301 @@
+/* Moving between collections. Shared by the studio and the labs, so it reads each page's own tokens. */
+:root {
+  --n-raise: var(--raise, var(--panel));
+  --n-hover: var(--hover, var(--surface));
+  --n-soft: var(--soft, var(--ink));
+  --n-accent: var(--accent, var(--patch));
+  --n-ctl: var(--ctl, 32px);
+}
+@media (pointer: coarse) {
+  :root { --n-ctl: 44px; }
+}
+
+/* ---- the switcher ---- */
+.coll-mark {
+  display: block;
+  flex: none;
+  width: 20px;
+  height: 20px;
+}
+.coll-mark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+.coll-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: var(--n-ctl);
+  margin: 0;
+  padding: 4px 8px 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 80ms;
+}
+.coll-btn:disabled { opacity: 1; cursor: default; }
+.coll-title { flex: 1 1 auto; min-width: 0; }
+.coll-btn .i { flex: none; color: var(--quiet); transition: transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+.coll-btn[aria-expanded="true"] .i { transform: rotate(180deg); }
+@media (hover: hover) and (pointer: fine) {
+  .coll-btn:hover:not(:disabled) { box-shadow: -8px 0 0 var(--n-raise), 0 0 0 0 transparent; background: var(--n-raise); }
+}
+
+.coll-menu {
+  position: fixed;
+  inset: auto;
+  width: min(340px, calc(100vw - 16px));
+  max-height: calc(100dvh - 72px);
+  margin: 0;
+  padding: 4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--line-strong);
+  background: var(--ground);
+  color: var(--ink);
+  font: 400 14px/1.4 var(--text);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 120ms, transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1), overlay 120ms allow-discrete, display 120ms allow-discrete;
+}
+.coll-menu:popover-open { opacity: 1; transform: none; }
+@starting-style {
+  .coll-menu:popover-open { opacity: 0; transform: translateY(-4px); }
+}
+.coll-menu ul { margin: 0; padding: 0; list-style: none; }
+
+.coll-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 6px 10px 6px 8px;
+  color: inherit;
+  text-decoration: none;
+  outline-offset: -2px;
+  transition: background-color 80ms;
+}
+.coll-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.coll-text b { font-weight: 500; font-size: 14px; }
+.coll-text span { color: var(--quiet); font-size: 12px; line-height: 16px; }
+.coll-n {
+  flex: none;
+  font: 400 11px/1 var(--mono);
+  color: var(--quiet);
+  font-variant-numeric: tabular-nums;
+}
+.coll-link[aria-current="page"] {
+  background: var(--n-raise);
+  box-shadow: inset 2px 0 0 0 var(--n-accent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .coll-link:hover { background: var(--n-raise); }
+}
+.coll-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin: 4px 0 0;
+  padding: 8px;
+  border-top: 1px solid var(--line);
+  color: var(--quiet);
+  font-size: 12px;
+}
+.coll-foot .link-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--n-soft);
+  font: inherit;
+  cursor: pointer;
+}
+.coll-menu kbd, .cmd kbd {
+  font: 400 11px/1 var(--mono);
+  color: var(--quiet);
+}
+
+/* ---- go to anything ---- */
+.cmd {
+  width: min(620px, calc(100vw - 16px));
+  max-height: min(600px, calc(100dvh - 96px));
+  margin: min(12vh, 96px) auto auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  background: var(--ground);
+  color: var(--ink);
+  font: 400 14px/1.4 var(--text);
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 120ms, transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1), overlay 120ms allow-discrete, display 120ms allow-discrete;
+}
+.cmd[open] {
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+  transform: none;
+}
+@starting-style {
+  .cmd[open] { opacity: 0; transform: translateY(-6px); }
+}
+.cmd:modal { overscroll-behavior: contain; }
+.cmd::backdrop {
+  background: rgb(5 4 8 / 0.72);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+.cmd-search {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--line);
+}
+.cmd-search > .i { color: var(--quiet); }
+.cmd-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+  appearance: none;
+}
+.cmd-search input::placeholder { color: var(--quiet); opacity: 1; }
+.cmd-search input::-webkit-search-cancel-button { display: none; }
+
+.cmd-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px;
+  scrollbar-width: thin;
+}
+.cmd-group {
+  margin: 0;
+  padding: 8px 8px 4px;
+  font: 400 11px/16px var(--mono);
+  color: var(--quiet);
+}
+.cmd-opt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 4px 10px 4px 8px;
+  color: inherit;
+  text-decoration: none;
+  scroll-margin: 4px;
+}
+.cmd-opt[aria-selected="true"] {
+  background: var(--n-raise);
+  box-shadow: inset 2px 0 0 0 var(--n-accent);
+}
+.cmd-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.cmd-text b { font-weight: 400; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.cmd-text b mark {
+  background: none;
+  color: var(--ink);
+  font-weight: 500;
+  box-shadow: inset 0 -2px 0 0 var(--n-accent);
+}
+.cmd-text span { color: var(--quiet); font-size: 12px; line-height: 16px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.cmd-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  font: 400 11px/1 var(--mono);
+  color: var(--quiet);
+}
+.cmd-none { margin: 0; padding: 28px 12px; text-align: center; color: var(--quiet); }
+.cmd-foot {
+  flex: none;
+  display: flex;
+  gap: 16px;
+  margin: 0;
+  padding: 8px 12px;
+  border-top: 1px solid var(--line);
+  color: var(--quiet);
+  font-size: 12px;
+}
+@media (pointer: coarse) {
+  .cmd-foot { display: none; }
+  .cmd { margin-top: 8px; max-height: calc(100dvh - 16px); }
+}
+
+/* ---- next and previous, at the end of a page ---- */
+.pager {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 48px;
+  padding: 1px;
+}
+.pager a {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 20px 20px;
+  outline: 1px solid var(--line);
+  outline-offset: 0;
+  color: var(--ink);
+  text-decoration: none;
+  transition: background-color 80ms;
+}
+.pager a:focus-visible { outline: 2px solid var(--n-accent); outline-offset: -2px; }
+.pager-next { align-items: flex-end; text-align: right; }
+.pager-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--quiet);
+  font-size: 13px;
+}
+.pager-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+}
+.pager-name b { font-weight: 500; }
+.pager-name svg { width: 20px; height: 20px; image-rendering: pixelated; }
+@media (hover: hover) and (pointer: fine) {
+  .pager a:hover { background: var(--n-raise); }
+}
+
+/* ---- crossing between pages: the frame holds still, the rest slides the way you're heading ---- */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+@keyframes coll-out-left { to { opacity: 0; transform: translateX(-32px); } }
+@keyframes coll-in-right { from { opacity: 0; transform: translateX(32px); } }
+@keyframes coll-out-right { to { opacity: 0; transform: translateX(32px); } }
+@keyframes coll-in-left { from { opacity: 0; transform: translateX(-32px); } }
+html:active-view-transition-type(forward)::view-transition-old(root) { animation: coll-out-left 170ms cubic-bezier(0.4, 0, 1, 1) both; }
+html:active-view-transition-type(forward)::view-transition-new(root) { animation: coll-in-right 230ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+html:active-view-transition-type(backward)::view-transition-old(root) { animation: coll-out-right 170ms cubic-bezier(0.4, 0, 1, 1) both; }
+html:active-view-transition-type(backward)::view-transition-new(root) { animation: coll-in-left 230ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+::view-transition-group(coll-frame) { animation-duration: 180ms; z-index: 1; }
+::view-transition-old(coll-frame), ::view-transition-new(coll-frame) { animation-duration: 180ms; }
+@media (prefers-reduced-motion: reduce) {
+  .coll-menu, .cmd { transition-duration: 0.01ms; transform: none; }
+}

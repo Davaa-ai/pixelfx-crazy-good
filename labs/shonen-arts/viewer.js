@@ -5,7 +5,6 @@ import { effects, groups } from "./fx/index.js";
 import { createFrame, clearFrame, createFx, createAct, actBounds, actSpan, actTiming, composite, backdrop } from "../../src/core/index.js";
 import { AZURE, VOLT, KI, ASH } from "./lib/shared.js";
 import { viewRect } from "./lib/summon.js";
-import { mountCollections } from "../../gallery/collections.js";
 
 // "native" leaves every technique in its own colors; the rest recolor them all
 const PALETTES = { native: null, azure: AZURE, volt: VOLT, ki: KI, ash: ASH };
@@ -411,7 +410,24 @@ addEventListener("keydown", (e) => {
   else if (e.key === "ArrowRight") click("#d-next");
 });
 
-mountCollections($("#packs"), "shonen", "pack-pill");
+// deep links, and the go-to-anything palette landing here
+function openFromHash() {
+  const raw = decodeURIComponent(location.hash.slice(1));
+  const tile = tiles.find((t) => t.id === raw);
+  if (tile) openDetail(tile);
+  else if (raw) document.getElementById(raw)?.scrollIntoView();
+}
+addEventListener("hashchange", openFromHash);
+addEventListener("pixelfx:open", (e) => {
+  const tile = tiles.find((t) => t.id === e.detail.id);
+  if (tile) openDetail(tile);
+});
+addEventListener("pixelfx:jump", (e) => {
+  if (dlg.open) dlg.close();
+  if (e.detail.id) document.getElementById(e.detail.id)?.scrollIntoView();
+  else scrollTo(0, 0);
+});
+setTimeout(openFromHash);
 
 resize();
 restartAll();

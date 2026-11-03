@@ -1,5 +1,7 @@
 /* The studio. The art is the interface: a contact sheet of square pixels, a quiet rail beside it, and an inspector
    built like a tool. Color comes from the effects; the accent only ever marks position or focus. */
+@import url(nav.css);
+
 @font-face {
   font-family: "Patch Pixel";
   font-weight: 400;
@@ -208,18 +210,7 @@ kbd {
 }
 
 .brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  align-self: flex-start;
-  text-decoration: none;
   font: 400 24px/28px var(--display);
-}
-.brand svg {
-  width: 21px;
-  height: 21px;
-  flex: none;
-  image-rendering: pixelated;
 }
 
 .search {
@@ -275,7 +266,7 @@ kbd {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   position: static;
   inset: auto;
   width: auto;
@@ -285,14 +276,21 @@ kbd {
   border: 0;
   background: transparent;
   color: inherit;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: none;
+  overflow: hidden;
 }
 .side-title { display: none; }
 
 .type button { padding: 0 4px; font-size: 12px; }
 
+.cats {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin-right: -16px;
+  padding-right: 16px;
+  scrollbar-width: none;
+}
 .cat-group + .cat-group { margin-top: 12px; }
 .cat-group h3 {
   margin: 0 0 2px;
@@ -305,7 +303,7 @@ kbd {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  min-height: 26px;
+  min-height: 25px;
   margin-inline: -8px;
   padding: 0 8px;
   text-decoration: none;
@@ -368,39 +366,6 @@ kbd {
 .select-row select option { background: var(--raise); color: var(--ink); }
 @media (hover: hover) and (pointer: fine) {
   .row-btn:hover { background: var(--raise); }
-}
-
-.colls summary {
-  display: flex;
-  align-items: center;
-  flex-direction: row-reverse;
-  justify-content: space-between;
-  min-height: 28px;
-  margin-inline: -8px;
-  padding: 0 8px;
-  color: var(--soft);
-  font-size: 13px;
-  cursor: pointer;
-  list-style: none;
-}
-.colls summary::-webkit-details-marker { display: none; }
-.colls summary .i { color: var(--quiet); transition: transform 120ms var(--ease); }
-.colls[open] summary .i { transform: rotate(180deg); }
-@media (hover: hover) and (pointer: fine) {
-  .colls summary:hover { background: var(--raise); }
-}
-.coll-link {
-  display: flex;
-  align-items: center;
-  min-height: 26px;
-  padding-left: 8px;
-  color: var(--quiet);
-  font-size: 13px;
-  text-decoration: none;
-}
-.coll-link[aria-current="page"] { color: var(--ink); box-shadow: inset 2px 0 0 0 var(--accent); }
-@media (hover: hover) and (pointer: fine) {
-  .coll-link:hover { color: var(--ink); }
 }
 
 .links {
@@ -1122,7 +1087,8 @@ pre {
 
 /* ---- shortcuts ---- */
 .keys {
-  width: min(600px, calc(100vw - 32px));
+  width: min(760px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
   padding: 0;
   border: 1px solid var(--line-strong);
   background: var(--ground);
@@ -1139,7 +1105,7 @@ pre {
 .keys h2 { font-size: 15px; font-weight: 500; }
 .keys-cols {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px 32px;
   padding: 16px 20px 20px;
 }
@@ -1197,8 +1163,9 @@ pre {
     border-bottom: 1px solid var(--line);
     min-height: var(--bar);
   }
-  .brand { align-self: center; flex: none; }
-  .brand span { display: none; }
+  .brand { flex: none; }
+  .brand .coll-btn { width: auto; padding-right: 4px; }
+  .brand .coll-title { display: none; }
   .search kbd { display: none; }
   .browse { display: inline-flex; }
 
@@ -1215,6 +1182,8 @@ pre {
     transition: transform 200ms var(--ease), opacity 200ms var(--ease), overlay 200ms allow-discrete, display 200ms allow-discrete;
     transform: translateY(16px);
     opacity: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     scrollbar-width: thin;
   }
   .side:popover-open {
@@ -1242,8 +1211,8 @@ pre {
   }
   .side-title h2 { font-size: 15px; font-weight: 500; }
   .type button { font-size: 13px; }
-  .cats a, .row-btn, .colls summary, .coll-link { min-height: 40px; }
-  .cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px 24px; }
+  .cats a, .row-btn { min-height: 40px; }
+  .cats { flex: none; overflow: visible; margin-right: 0; padding-right: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px 24px; }
   .cat-group + .cat-group { margin-top: 0; }
   .row-btn kbd, .keys-open { display: none; }
 

@@ -10,6 +10,12 @@
 
 .brand { font-size: 20px; line-height: 24px; }
 
+/* holds the lineup's place until the hearts load, so the sheet below doesn't jump */
+#hero:empty { aspect-ratio: 4 / 1.32; margin-bottom: 8px; }
+@media (max-width: 1023px) {
+  #hero:empty { aspect-ratio: 2 / 1.32; }
+}
+
 .lineup {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
