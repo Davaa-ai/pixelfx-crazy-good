@@ -18,7 +18,7 @@ No characters, costumes, symbols or logos are drawn.
 
 ```bash
 node tools/serve.mjs
-# open http://localhost:8080/anime/bench/
+# open http://localhost:8080/anime/gallery/
 ```
 
 **From the terminal**, through `anime/run.mjs`, which runs any pixelfx tool against `anime/fx`:
@@ -31,7 +31,7 @@ node anime/run.mjs check                                          # all twelve: 
 node anime/run.mjs sheets                                         # sprite sheets -> sheets/<series>/<name>.png
 ```
 
-`node anime/build-index.mjs` regenerates `anime/fx/index.js` (what the bench reads) and `anime/CATALOG.md` after you add
+`node anime/build-index.mjs` regenerates `anime/fx/index.js` (what the gallery reads) and `anime/CATALOG.md` after you add
 or rename an effect. GIF previews of everything are in [`previews/`](previews).
 
 ## the effects
@@ -71,14 +71,14 @@ anime/
   fx/_lib.js               ribbons along a path, path glow, manga speed-line bursts, stroke flicker
   fx/categories.js         the three series, for the gallery
   fx/index.js              generated registry (node anime/build-index.mjs)
-  bench/                   the live viewer: the main gallery's player pointed at this registry
+  gallery/                 the live viewer: the shared studio pointed at this registry
   run.mjs                  run render / act / check / list / sheets against anime/fx
   previews/                GIFs of every effect
   CATALOG.md               generated list
 ```
 
-The bench is the main gallery's own `app.js` and `style.css`, loaded through an import map that swaps
-`src/fx/index.js` for `anime/fx/index.js`. That is why it needs no copy of the player and no change to `gallery/`.
+The viewer is a short config over `gallery/studio.js`, the studio every collection shares, so it needs no copy of the
+player. Run `node tools/framing.mjs` after adding an effect so the studio can frame it on its art.
 
 ## making one more
 
