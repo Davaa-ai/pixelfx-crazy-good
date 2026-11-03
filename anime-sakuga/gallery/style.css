@@ -1,0 +1,14 @@
+/* Anime Sakuga: Conqueror obsidian, crimson Haki, and hot plasma highlights over the shared studio. */
+:root {
+  --ground: #07050a;
+  --raise: #17101f;
+  --hover: #241930;
+  --ink: #faf4f8;
+  --soft: #dfd0db;
+  --quiet: #ad9ba9;
+  --line: #281c33;
+  --line-strong: #54365e;
+  --accent: #ff4a6e;
+}
+
+.brand { font-size: 20px; line-height: 24px; }

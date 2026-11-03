@@ -8,6 +8,7 @@ export const COLLECTIONS = [
   { id: "sanguine", name: "Sanguine arcana", path: "labs/sanguine-arcana/" },
   { id: "shonen", name: "Shonen arts", path: "labs/shonen-arts/" },
   { id: "anime", name: "Anime lab", path: "anime/gallery/" },
+  { id: "sakuga", name: "Anime sakuga", path: "anime-sakuga/gallery/" },
 ];
 
 const ROOT = new URL("../", import.meta.url);

@@ -15,6 +15,7 @@ const TARGETS = [
   ["dark-fantasy-love/fx/index.js", "dark-fantasy-love/gallery/framing.js"],
   ["attachment-hearts/fx/index.js", "attachment-hearts/gallery/framing.js"],
   ["anime/fx/index.js", "anime/gallery/framing.js"],
+  ["anime-sakuga/fx/index.js", "anime-sakuga/gallery/framing.js"],
 ];
 const SAMPLES = 16, SOLID = 48, MARGIN = 3;
 
