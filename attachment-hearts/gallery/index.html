@@ -4,81 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>attachment hearts · ТАТАЛЦАЛ · pixelfx</title>
-<meta name="description" content="Four intricate sculpted pixel-art hearts inspired by the four attachment styles — Magnetic, Armored, Polar (Ice & Fire friction), and Luminous — built on pixelfx.">
+<meta name="description" content="Four intricate sculpted pixel-art hearts inspired by the four attachment styles: Magnetic, Armored, Polar and Luminous, built on pixelfx.">
+<meta name="theme-color" content="#060509">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@400;500&family=Red+Hat+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../gallery/style.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="head">
-  <div class="title">
-    <svg class="mark" viewBox="0 0 11 11" shape-rendering="crispEdges" role="img" aria-label="Attachment Hearts Emblem">
-      <rect x="1" y="2" width="4" height="3" fill="#383247"/>
-      <rect x="6" y="2" width="4" height="3" fill="#ff8d29"/>
-      <rect x="0" y="3" width="5" height="3" fill="#5ab0eb"/>
-      <rect x="6" y="3" width="5" height="3" fill="#dc2f72"/>
-      <rect x="5" y="3" width="1" height="5" fill="#ffffff"/>
-      <rect x="1" y="6" width="4" height="2" fill="#dc2f72"/>
-      <rect x="6" y="6" width="4" height="2" fill="#ffd166"/>
-      <rect x="3" y="8" width="5" height="2" fill="#ffedb0"/>
-      <rect x="5" y="10" width="1" height="1" fill="#ffffff"/>
-    </svg>
-    <div>
-      <p class="kicker">ТАТАЛЦАЛ · FOUR STYLES OF LOVING</p>
-      <h1>attachment hearts.</h1>
-      <p class="sub"><em>“Чамайг юу татдаг вэ? Чи юунаас зугтдаг вэ?”</em> — <span id="count">0</span> bespoke 3D-faceted pixel-art effects across the 4 attachment hearts (hovering relics + awakening surges).</p>
-    </div>
-  </div>
-  <nav class="links">
-    <a href="../../dark-fantasy-love/gallery/">dark fantasy love</a>
-    <a href="../../gallery/">main pixelfx (244)</a>
-    <a href="../sheets/index.json" target="_blank" rel="noopener">sheets index</a>
-    <a href="../README.md" target="_blank" rel="noopener">pack readme</a>
-  </nav>
-</header>
-
-<section class="sanctuary" aria-label="The Four Attachment Hearts">
-  <div class="sanctuary-head">
-    <span>Хайрлах дөрвөн хэв маяг · Live 4-Heart Pedestal Lineup</span>
-    <span>Click any heart to inspect · Press “surge ✦” to trigger its reaction</span>
-  </div>
-  <div class="lineup" id="lineup"></div>
-</section>
-
-<div class="bar">
-  <div class="bar-in">
-    <div class="chips" id="chips" role="toolbar" aria-label="Categories"></div>
-    <input id="q" type="search" placeholder="search ice, dipole, loop..." aria-label="Search effects" autocomplete="off">
-  </div>
-</div>
-
-<main id="grid"></main>
-<p class="empty" id="none" hidden>Nothing matches that. Try magnetic, armored, polar, luminous, loop, or surge.</p>
-
-<dialog class="detail" id="detail" aria-labelledby="d-name">
-  <div class="sheet">
-    <div>
-      <div class="big"><canvas id="big"></canvas><button class="close" id="d-close" type="button">close</button></div>
-    </div>
-    <div class="info">
-      <h2 id="d-name"></h2>
-      <div class="id" id="d-id"></div>
-      <p id="d-desc"></p>
-      <dl class="facts" id="d-facts"></dl>
-      <div class="controls">
-        <div class="row"><label>play</label><button class="btn" id="d-play" type="button">pause</button><button class="btn" id="d-again" type="button">again</button><span id="d-speed" class="row"></span></div>
-        <div class="row"><label>backdrop</label><span id="d-bg" class="row"></span></div>
-        <div class="row"><label>palette</label><select class="btn" id="d-pal" aria-label="Palette"></select><button class="btn" id="d-seed" type="button">new seed</button></div>
-        <div class="row"><label>show</label><button class="btn" id="d-flip" type="button">mirror</button><button class="btn" id="d-make" type="button">sprite sheet</button></div>
-      </div>
-      <div class="code-head"><span>use it</span><span><a id="d-src" target="_blank" rel="noopener">source</a> · <button class="btn" id="d-copy" type="button">copy</button></span></div>
-      <pre id="d-code"></pre>
-    </div>
-    <div class="sheetout" id="d-sheet"></div>
-  </div>
-</dialog>
-
+<div id="app"><div class="boot" role="status" aria-label="Loading effects"><i></i><i></i><i></i></div></div>
+<noscript><p style="padding:24px">Every effect here is drawn live by JavaScript, so this page needs it switched on.</p></noscript>
 <script type="module" src="app.js"></script>
 </body>
 </html>

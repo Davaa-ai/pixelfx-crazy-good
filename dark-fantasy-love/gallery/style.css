@@ -1,39 +1,14 @@
-/* layout: Dark Fantasy Love theme overrides over core studio stylesheet — Crimson Velvet & Reliquary Gold. */
+/* Dark Fantasy Love: crimson velvet and reliquary gold over the shared studio. */
 :root {
-  --ground: #070409;
-  --surface: #110a15;
-  --panel: #180e1e;
-  --stage: #15131d;
+  --ground: #080509;
+  --raise: #190f1c;
+  --hover: #261628;
   --ink: #fbf2f5;
+  --soft: #dec9d3;
   --quiet: #b09aa7;
-  --dim: #927b89;
-  --line: #311f2c;
+  --line: #2a1a26;
   --line-strong: #533349;
-  --patch: #f24e7a;
-  --patch-soft: rgba(242, 78, 122, 0.18);
-  --gold: #ffd06b;
+  --accent: #f24e7a;
 }
 
-::selection {
-  background: rgba(220, 46, 92, 0.32);
-  color: var(--ink);
-}
-
-:focus-visible {
-  outline: 2px solid var(--gold);
-  outline-offset: 2px;
-}
-
-.bar {
-  background: rgba(7, 4, 9, 0.9);
-}
-
-.grid {
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-}
-
-.sheet .big[data-bg="none"],
-.sheetout-frame {
-  background-color: #110a12;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'%3E%3Crect width='8' height='8' fill='%231d121d'/%3E%3Crect x='8' y='8' width='8' height='8' fill='%231d121d'/%3E%3C/svg%3E");
-}
+.brand { font-size: 20px; line-height: 24px; }

@@ -13,7 +13,7 @@ const G = join(ROOT, "gallery"), OUT = join(ROOT, "dist", "gallery"), PAGE = joi
 mkdirSync(OUT, { recursive: true });
 mkdirSync(PAGE, { recursive: true });
 
-await build({ entryPoints: [join(G, "app.js")], bundle: true, format: "esm", minify: true, outfile: join(OUT, "app.js"), legalComments: "none" });
+await build({ entryPoints: [join(G, "app.js")], bundle: true, format: "esm", minify: true, outfile: join(OUT, "app.js"), legalComments: "none", define: { __PIXELFX_STANDALONE__: "true" } });
 cpSync(join(G, "fonts"), join(OUT, "fonts"), { recursive: true });
 writeFileSync(join(OUT, "style.css"), readFileSync(join(G, "style.css")));
 writeFileSync(join(OUT, "index.html"), readFileSync(join(G, "index.html")));

@@ -89,9 +89,8 @@
     border-radius: 5px; font: 500 12px/1 var(--mono); text-decoration: none; color: var(--quiet);
     transition: color 150ms var(--ease-out), background-color 150ms var(--ease-out);
   }
-  .pack-pill span { color: var(--dim); font-variant-numeric: tabular-nums; }
+  .pack-pill[hidden] { display: none; }
   .pack-pill[aria-current="page"] { background: var(--panel); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-strong); }
-  .pack-pill[aria-current="page"] span { color: var(--gold); }
 
   /* sticky studio bar */
   .bar {
@@ -147,7 +146,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 24px 20px;
-    align-items: start;
+    align-items: stretch;
   }
   main[data-zoom="4"] .tiles {
     grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
@@ -158,9 +157,11 @@
     border: 1px solid var(--line);
     border-radius: 12px;
     padding: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+    display: grid;
+    /* wells and captions line up across a row, whatever each card's art or text needs */
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+    row-gap: 14px;
     cursor: pointer;
     transition: border-color 180ms var(--ease-out), transform 160ms var(--ease-out);
   }
@@ -321,11 +322,7 @@
     </div>
   </div>
   <div class="head-nav">
-    <nav class="packs" aria-label="Collections">
-      <a class="pack-pill" href="../../gallery/">core <span>244</span></a>
-      <a class="pack-pill" id="pack-dfl" href="../../dark-fantasy-love/gallery/" hidden>dark fantasy <span>8</span></a>
-      <a class="pack-pill" href="./" aria-current="page">sanguine arcana <span>6</span></a>
-    </nav>
+    <nav class="packs" id="packs" aria-label="Collections"></nav>
   </div>
 </header>
 

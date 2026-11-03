@@ -4,6 +4,7 @@
 import { effects, groups } from "./fx/index.js";
 import { createFrame, clearFrame, createFx, composite, backdrop } from "../../src/core/index.js";
 import { BLOOD, VIOLET } from "./lib/shared.js";
+import { mountCollections } from "../../gallery/collections.js";
 
 const PALETTES = {
   sanguine: BLOOD,
@@ -400,12 +401,7 @@ addEventListener("keydown", (e) => {
   }
 });
 
-// probe Dark Fantasy Love sibling pack
-if (location.protocol !== "file:") {
-  fetch("../../dark-fantasy-love/gallery/index.html", { method: "HEAD" })
-    .then((r) => { if (r.ok) $("#pack-dfl").hidden = false; })
-    .catch(() => {});
-}
+mountCollections($("#packs"), "sanguine", "pack-pill");
 
 resize();
 restartAll();
