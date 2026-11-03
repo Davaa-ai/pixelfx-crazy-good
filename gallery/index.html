@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>pixelfx</title>
-<meta name="description" content="Pixel art effects and animations, every one a small piece of code. Play them, recolor them, export sprite sheets.">
+<title>pixelfx · procedural pixel art effects</title>
+<meta name="description" content="244 procedural pixel art effects and animations, every one a small piece of code. Play them live, scrub frames, recolor palettes, and export sprite sheets.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 7' shape-rendering='crispEdges'%3E%3Crect x='1' y='1' width='6' height='6' fill='%23ffffff'/%3E%3Crect x='0' y='0' width='3' height='3' fill='%23f53cd1'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@400;500&family=Red+Hat+Mono:wght@400;500&display=swap">
@@ -12,48 +13,221 @@
 </head>
 <body>
 <!--BODY-->
+<a class="skip-link" href="#grid">Skip to effects</a>
+
 <header class="head">
   <div class="title">
-    <svg class="mark" viewBox="0 0 7 7" shape-rendering="crispEdges" role="img" aria-label="Patch"><rect x="1" y="1" width="6" height="6" fill="#ffffff"/><rect x="0" y="0" width="3" height="3" fill="#f53cd1"/></svg>
+    <svg class="mark" viewBox="0 0 7 7" shape-rendering="crispEdges" role="img" aria-label="Patch">
+      <rect x="1" y="1" width="6" height="6" fill="#ffffff"/>
+      <rect x="0" y="0" width="3" height="3" fill="#f53cd1"/>
+    </svg>
     <div>
       <h1>pixelfx.</h1>
-      <p class="sub"><span id="count">0</span> pixel art effects, every one a small piece of code.</p>
+      <p class="sub"><span id="count">244</span> pixel art effects and animations, every one a small piece of code.</p>
     </div>
   </div>
-  <nav class="links">
-    <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">github</a>
-    <a href="https://github.com/patch-gg/pixelfx#the-skill" target="_blank" rel="noopener">claude code skill</a>
-    <a href="https://patch.gg" target="_blank" rel="noopener">patch.gg</a>
-  </nav>
+  <div class="head-nav">
+    <nav class="packs" id="packs" aria-label="Collections" hidden>
+      <a class="pack-pill" href="./" aria-current="page">core <span>244</span></a>
+      <a class="pack-pill" id="pack-dfl" href="../dark-fantasy-love/gallery/" hidden>dark fantasy <span>8</span></a>
+      <a class="pack-pill" id="pack-sa" href="../labs/sanguine-arcana/" hidden>sanguine arcana <span>6</span></a>
+    </nav>
+    <nav class="links" aria-label="Project links">
+      <a href="https://github.com/patch-gg/pixelfx" target="_blank" rel="noopener">github</a>
+      <a href="https://github.com/patch-gg/pixelfx#the-skill" target="_blank" rel="noopener">claude skill</a>
+      <a href="https://patch.gg" target="_blank" rel="noopener">patch.gg</a>
+    </nav>
+  </div>
 </header>
-<div class="bar">
+
+<div class="bar" id="bar">
   <div class="bar-in">
-    <div class="chips" id="chips" role="toolbar" aria-label="Categories"></div>
-    <input id="q" type="search" placeholder="search" aria-label="Search effects" autocomplete="off">
+    <div class="bar-top">
+      <div class="search-wrap">
+        <svg class="search-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="7" cy="7" r="4.75"/><path d="M10.5 10.5L14 14" stroke-linecap="square"/>
+        </svg>
+        <input id="q" type="search" placeholder="Search effects, tags…" aria-label="Search effects" autocomplete="off" spellcheck="false">
+        <kbd class="kbd-hint" id="q-kbd" aria-hidden="true">/</kbd>
+        <button class="q-clear" id="q-clear" type="button" aria-label="Clear search" hidden>
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg>
+        </button>
+      </div>
+
+      <div class="seg" id="traits" role="group" aria-label="Filter by behavior">
+        <button class="seg-btn" type="button" data-trait="all" aria-pressed="true">all</button>
+        <button class="seg-btn" type="button" data-trait="acted" aria-pressed="false">acted</button>
+        <button class="seg-btn" type="button" data-trait="loop" aria-pressed="false">loops</button>
+        <button class="seg-btn" type="button" data-trait="oneshot" aria-pressed="false">one-shots</button>
+      </div>
+
+      <div class="bar-tools">
+        <span class="result-meta" id="result-meta" aria-live="polite">244 effects</span>
+        <button class="reset-btn" id="reset-all" type="button" hidden>reset</button>
+        <label class="stage-select-wrap" title="Preview backdrop across the grid">
+          <span class="sr-only">Grid backdrop</span>
+          <select class="btn-select" id="g-bg" aria-label="Grid stage backdrop">
+            <option value="auto">stage: auto</option>
+            <option value="dark">stage: dark</option>
+            <option value="ground">stage: ground</option>
+            <option value="sky">stage: sky</option>
+            <option value="light">stage: light</option>
+            <option value="black">stage: black</option>
+          </select>
+        </label>
+        <button class="dir-toggle" id="dir-toggle" type="button" aria-expanded="false" aria-controls="cat-drawer">
+          <span>index</span>
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="rail-wrap">
+      <div class="chips" id="chips" role="toolbar" aria-label="Categories"></div>
+    </div>
+
+    <div class="cat-drawer" id="cat-drawer" hidden></div>
   </div>
 </div>
+
 <main id="grid"></main>
-<p class="empty" id="none" hidden>Nothing matches that. Try fire, slash or loop.</p>
+
+<div class="empty" id="none" hidden>
+  <p class="empty-title" id="none-msg">Nothing matches those filters.</p>
+  <div class="empty-actions">
+    <span>Try</span>
+    <button class="chip-suggest" type="button" data-q="fire">fire</button>
+    <button class="chip-suggest" type="button" data-q="slash">slash</button>
+    <button class="chip-suggest" type="button" data-q="portal">portal</button>
+    <button class="chip-suggest" type="button" data-q="lightning">lightning</button>
+    <span>or</span>
+    <button class="btn" id="none-reset" type="button">reset all filters</button>
+  </div>
+</div>
+
 <dialog class="detail" id="detail" aria-labelledby="d-name">
-  <div class="sheet">
-    <div>
-      <div class="big"><canvas id="big"></canvas><button class="close" id="d-close" type="button">close</button></div>
-    </div>
-    <div class="info">
-      <h2 id="d-name"></h2>
-      <div class="id" id="d-id"></div>
-      <p id="d-desc"></p>
-      <dl class="facts" id="d-facts"></dl>
-      <div class="controls">
-        <div class="row"><label>play</label><button class="btn" id="d-play" type="button">pause</button><button class="btn" id="d-again" type="button">again</button><span id="d-speed" class="row"></span></div>
-        <div class="row"><label>backdrop</label><span id="d-bg" class="row"></span></div>
-        <div class="row"><label>palette</label><select class="btn" id="d-pal" aria-label="Palette"></select><button class="btn" id="d-seed" type="button">new seed</button></div>
-        <div class="row"><label>show</label><button class="btn" id="d-flip" type="button">mirror</button><button class="btn" id="d-actor" type="button">character</button><button class="btn" id="d-make" type="button">sprite sheet</button></div>
+  <div class="modal-card">
+    <header class="modal-top">
+      <div class="modal-crumb">
+        <button class="crumb-cat" id="d-cat-btn" type="button"></button>
+        <span class="crumb-sep" aria-hidden="true">/</span>
+        <code class="crumb-id" id="d-id"></code>
+        <button class="icon-btn" id="d-copy-id" type="button" title="Copy effect ID" aria-label="Copy effect ID">copy id</button>
       </div>
-      <div class="code-head"><span>use it</span><span><a id="d-src" target="_blank" rel="noopener">source</a> · <button class="btn" id="d-copy" type="button">copy</button></span></div>
-      <pre id="d-code"></pre>
+      <div class="modal-nav">
+        <span class="modal-pos" id="d-pos"></span>
+        <button class="icon-btn" id="d-prev" type="button" title="Previous effect (Left arrow)" aria-label="Previous effect">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8.5 3L4.5 7l4 4"/></svg>
+        </button>
+        <button class="icon-btn" id="d-next" type="button" title="Next effect (Right arrow)" aria-label="Next effect">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5.5 3l4 4-4 4"/></svg>
+        </button>
+        <button class="close-btn" id="d-close" type="button" title="Close (Esc)" aria-label="Close inspector">
+          <span>esc</span>
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="sheet">
+      <div class="stage-col">
+        <div class="big" id="big-wrap">
+          <canvas id="big"></canvas>
+          <div class="pivot-mark" id="d-pivot-mark" hidden aria-hidden="true"></div>
+          <span class="stage-badge" id="d-freeze-badge" hidden>hit-stop</span>
+        </div>
+
+        <div class="transport">
+          <div class="transport-main">
+            <button class="btn transport-play" id="d-play" type="button" aria-pressed="true" title="Play / Pause (Space)">pause</button>
+            <button class="btn icon-step" id="d-step-prev" type="button" title="Previous frame (,)" aria-label="Step back 1 frame">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 2.5v7M9 2.5L5 6l4 3.5"/></svg>
+            </button>
+            <button class="btn icon-step" id="d-step-next" type="button" title="Next frame (.)" aria-label="Step forward 1 frame">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 2.5v7M3 2.5L7 6 3 9.5"/></svg>
+            </button>
+            <button class="btn" id="d-again" type="button" title="Replay from start (R)">replay</button>
+
+            <div class="scrub-wrap">
+              <input class="scrub" id="d-scrub" type="range" min="0" max="30" value="0" step="1" aria-label="Timeline frame scrubber">
+              <div class="scrub-marks" id="d-marks" aria-hidden="true"></div>
+            </div>
+
+            <span class="time-readout" id="d-time">f 0/0 · 0.00s</span>
+          </div>
+
+          <div class="transport-sub">
+            <div class="speed-row">
+              <span class="ctrl-label">speed</span>
+              <span id="d-speed" class="btn-group"></span>
+            </div>
+            <div class="kbd-legend" aria-hidden="true">
+              <span><kbd>space</kbd> play</span>
+              <span><kbd>,</kbd><kbd>.</kbd> step</span>
+              <span><kbd>←</kbd><kbd>→</kbd> browse</span>
+              <span><kbd>r</kbd> replay</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info">
+        <div class="info-head">
+          <h2 id="d-name"></h2>
+          <p class="info-desc" id="d-desc"></p>
+          <dl class="facts" id="d-facts"></dl>
+          <div class="tag-list" id="d-tags" aria-label="Effect tags"></div>
+        </div>
+
+        <div class="controls-card">
+          <div class="ctrl-row">
+            <span class="ctrl-label">backdrop</span>
+            <div id="d-bg" class="btn-group"></div>
+          </div>
+
+          <div class="ctrl-row">
+            <label class="ctrl-label" for="d-pal">palette</label>
+            <div class="pal-controls">
+              <select class="btn-select" id="d-pal" aria-label="Color palette"></select>
+              <button class="btn" id="d-seed" type="button" title="Randomize deterministic PRNG seed">seed <span id="d-seed-val">default</span></button>
+            </div>
+          </div>
+          <div class="pal-ramp" id="d-ramp" aria-label="Active color ramp"></div>
+
+          <div class="ctrl-row">
+            <span class="ctrl-label">stage</span>
+            <div class="btn-group">
+              <button class="btn" id="d-flip" type="button" aria-pressed="false" title="Mirror horizontally (M)">mirror</button>
+              <button class="btn" id="d-actor" type="button" aria-pressed="true" title="Toggle character (C)">character</button>
+              <button class="btn" id="d-pivot" type="button" aria-pressed="false" title="Show origin anchor (P)">origin</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="export-panel">
+          <div class="export-tabs" role="tablist" aria-label="Integration & export">
+            <button class="tab-btn" id="tab-code" type="button" role="tab" aria-selected="true" aria-controls="pane-code">code</button>
+            <button class="tab-btn" id="tab-sheet" type="button" role="tab" aria-selected="false" aria-controls="pane-sheet">sprite sheet</button>
+            <div class="export-actions">
+              <a class="src-link" id="d-src" target="_blank" rel="noopener">source ↗</a>
+              <button class="btn" id="d-copy" type="button">copy</button>
+            </div>
+          </div>
+
+          <div class="tab-pane" id="pane-code" role="tabpanel" aria-labelledby="tab-code">
+            <pre id="d-code"></pre>
+          </div>
+
+          <div class="tab-pane" id="pane-sheet" role="tabpanel" aria-labelledby="tab-sheet" hidden>
+            <div class="sheet-actions">
+              <button class="btn btn-primary" id="d-dl-png" type="button">download .png</button>
+              <button class="btn" id="d-dl-json" type="button">download .json</button>
+            </div>
+            <div class="sheetout" id="d-sheet"></div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="sheetout" id="d-sheet"></div>
   </div>
 </dialog>
 <!--/BODY-->
