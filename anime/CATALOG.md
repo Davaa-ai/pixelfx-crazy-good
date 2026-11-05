@@ -1,6 +1,6 @@
 # Anime lab catalog
 
-12 effects. Render any of them with `node anime/run.mjs render <id> --gif`.
+20 effects. Render any of them with `node anime/run.mjs render <id> --gif`.
 
 ## demon slayer
 
@@ -34,3 +34,25 @@ ODM gear, thunder spears, shifts and the rumbling.
 | Rumbling | `attack-on-titan/rumbling` | loop 2.4s | 300×112 | Something enormous is walking: each far-off step throws a ring along the floor and a burst of dust, cracks race out, pebbles hop, grit sifts down. It shakes the whole picture. |
 | Thunder spear | `attack-on-titan/thunder-spear` | one-shot 4.1s | 304×156 | A cabled lance lodges in the target and sits blinking, faster and faster. Then white flash, blue thunder arcs, a ring along the floor and a rolling smoke column. |
 | Titan shift | `attack-on-titan/titan-shift` | one-shot 4.2s | 312×296 | One bright pinprick, the ground shuddering, then a corkscrew of twisting lightning slams down: a white pillar, a dome of light, glowing cracks, and a wall of boiling steam. |
+
+## bleach
+
+released blades: black crescent waves, scattering petal-blades, pillars of pressure, fingertip blasts.
+
+| effect | id | | size | what it does |
+|---|---|---|---|---|
+| Fingertip cero | `bleach/fingertip-cero` | one-shot 3s | 300×136 | Crimson motes stream into a black-rimmed sphere at a raised fingertip; it fires a black-edged red beam with a white heart and shock rings, exploding on the target. |
+| Moon-fang wave | `bleach/moon-fang-wave` | one-shot 2.9s | 320×136 | Black fire licks off the raised blade; one cut down sends a towering black crescent, crimson-rimmed and white-edged, tearing along the floor through the target. |
+| Release pillar | `bleach/release-pillar` | one-shot 4s | 264×232 | Blade held out, pebbles trembling, then a pillar of pale pressure erupts to the sky, wound with spiralling light, and collapses into a black, crimson-edged aura. |
+| Thousand petals | `bleach/thousand-petals` | one-shot 3.9s | 300×140 | The blade comes apart into pink petal-blades that stream at the target, close round it in a whirling sphere, crush and burst, then flow home into steel. |
+
+## solo leveling
+
+the hunter's system: dungeon gates, status windows, unseen grips and dagger rushes.
+
+| effect | id | | size | what it does |
+|---|---|---|---|---|
+| Dungeon gate | `solo-leveling/dungeon-gate` | loop 2.4s | 150×160 | An oval rift of crackling light over a whirlpool falling away into the dark, motes and mist spiralling in, the floor washed in its glow. Recolor it red for the bad ones. |
+| Ruler's grip | `solo-leveling/rulers-grip` | one-shot 2.8s | 270×152 | An open palm pushes ripples through the air; a giant hand of violet light closes round the target, lifting stones, then a clench crushes it and a sweep flings it. |
+| System window | `solo-leveling/system-window` | one-shot 2.7s | 200×132 | A blue point opens into a holographic panel: corner brackets glint, a notice types in, LEVEL UP flares white, a scan line sweeps it, then it glitches and folds away. |
+| Twin dagger rush | `solo-leveling/twin-dagger-rush` | one-shot 2.3s | 256×142 | Shadow pools at his feet, then he steps through it round the target four times, slashing at each arrival, and lands past it as a great X tears open across it. |

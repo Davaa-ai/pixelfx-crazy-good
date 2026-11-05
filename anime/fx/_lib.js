@@ -1,7 +1,7 @@
 // Shared by the anime effects (the leading _ keeps the tools from listing it as an effect).
 // Ribbons that follow a path and taper, glow along a path, manga speed-line bursts, stepped stroke flicker.
 
-import { clamp, rng, TAU, WHITE } from "../../src/core/index.js";
+import { clamp, rng, rand, TAU, WHITE } from "../../src/core/index.js";
 
 /** Points evenly spaced along a polyline: { pts, L } with L its length. */
 export function pathSamples(pts, step = 0.8) {
@@ -67,3 +67,30 @@ const FLICK = [1, 0.72, 0.3, 0.95, 0.5, 0.8, 0.22, 0.4, 0.12];
 export const strokeLevel = (t, ts, fps = 30) => (t < ts ? 0 : FLICK[Math.floor((t - ts) * fps + 1e-4)] ?? 0);
 /** The brightest of several strokes [{ t, k }] at time t. */
 export const strokesAt = (t, strokes) => Math.max(0, ...strokes.map((s) => strokeLevel(t, s.t) * s.k));
+
+/**
+ * Take light back out of one pixel (keep 0 leaves none), so a black core stays black under every glow drawn before it:
+ * call it after the lights. Light is additive, so without this a black blade wrapped in red light washes to pink.
+ */
+export function unlight(p, x, y, keep = 0) {
+  const sx = p.cellX(x, y) - p.ox, sy = p.cellY(x, y) - p.oy;
+  if (sx < 0 || sy < 0 || sx >= p.w || sy >= p.h) return;
+  const i = sy * p.w + sx;
+  if (keep <= 0) return void (p.L[i] = 0);
+  const d = p.L[i], ch = (s) => ((((d >>> s) & 255) * keep) & 255) << s;
+  p.L[i] = (255 << 24) | ch(16) | ch(8) | ch(0);
+}
+
+/** A ragged floor crack from x0 to x1 just under y = 0 that glows and cools: k 1 white-hot to 0 gone. ramp dark..bright. */
+export function floorScar(p, x0, x1, seed, k, ramp) {
+  if (k <= 0.02 || x1 - x0 < 1) return;
+  const n = ramp.length, c = ramp[Math.max(0, Math.min(n - 1, Math.round(1 + k * (n - 2))))], cd = ramp[Math.max(0, Math.round(k * (n - 3)))];
+  for (let x = Math.floor(x0); x <= x1; x++) {
+    const w = rand(Math.floor(x / 3), seed, 3), y = w < 0.3 ? 0 : w < 0.8 ? 1 : 2;
+    p.dot(x, y, c, Math.min(1, k * 1.6));
+    if (w > 0.85) p.dot(x, y + 1, cd, k);
+    if (rand(x, seed, 4) < 0.12) p.dot(x, y - 1, cd, k);
+    if ((x & 3) === 0) p.light(x, y, c, 0.5 * k);
+  }
+  p.glowLine(x0, 0.5, x1, 0.5, 5, c, 0.25 * k);
+}

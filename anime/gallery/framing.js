@@ -12,4 +12,12 @@ export const framing = {
   "attack-on-titan/rumbling": [-22,-89,230,22,0],
   "attack-on-titan/thunder-spear": [-45,-118,276,22,96],
   "attack-on-titan/titan-shift": [-147,-207,136,58,63],
+  "bleach/fingertip-cero": [-32,-96,313,38,50],
+  "bleach/moon-fang-wave": [-37,-95,299,25,35],
+  "bleach/release-pillar": [-132,-207,129,27,42],
+  "bleach/thousand-petals": [-20,-78,292,30,91],
+  "solo-leveling/dungeon-gate": [-69,-149,70,7,32],
+  "solo-leveling/rulers-grip": [-22,-74,245,26,55],
+  "solo-leveling/system-window": [-20,-117,150,5,50],
+  "solo-leveling/twin-dagger-rush": [-25,-83,235,37,55],
 };

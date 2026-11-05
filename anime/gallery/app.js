@@ -6,7 +6,7 @@ start({
   collection: "anime",
   title: "anime lab.",
   lede: "{n} anime-inspired pixel art effects, every one a small piece of code. Open any of them to scrub its frames, recolor it and export a sprite sheet.",
-  suggestions: ["thunder", "water", "domain", "titan"],
+  suggestions: ["thunder", "domain", "titan", "petals", "gate"],
   links: [
     { label: "Catalog", href: "../CATALOG.md" },
     { label: "Readme", href: "../README.md" },

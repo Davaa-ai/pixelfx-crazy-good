@@ -1,7 +1,7 @@
 # anime lab
 
-Twelve effects inspired by **Demon Slayer**, **Jujutsu Kaisen** and **Attack on Titan**, built on pixelfx's own
-mechanics: the two buffers (color and additive light), seeded particles, acts with a wind-up, a freeze on contact and a
+Twenty effects inspired by **Demon Slayer**, **Jujutsu Kaisen**, **Attack on Titan**, **Bleach** and **Solo Leveling**,
+built on pixelfx's own mechanics: the two buffers (color and additive light), seeded particles, acts with a wind-up, a freeze on contact and a
 target that takes the hit, and loops that tile with no seam.
 
 It is a separate bench. Nothing here is in `src/fx`, the registry, the catalog, the README count or the main gallery,
@@ -27,7 +27,7 @@ node tools/serve.mjs
 node anime/run.mjs render demon-slayer/thunder-flash --gif       # contact sheet + GIF in records/
 node anime/run.mjs act jujutsu-kaisen/black-flash --mp4          # the whole act, character and target
 node anime/run.mjs act attack-on-titan/odm-swing --from 0.3 --to 1.1 --step 0.05 --zoom 3
-node anime/run.mjs check                                          # all twelve: spills, seams, determinism, speed
+node anime/run.mjs check                                          # all of them: spills, seams, determinism, speed
 node anime/run.mjs sheets                                         # sprite sheets -> sheets/<series>/<name>.png
 ```
 
@@ -63,13 +63,34 @@ or rename an effect. GIF previews of everything are in [`previews/`](previews).
 | **titan shift** [<sub>gif</sub>](previews/attack-on-titan-titan-shift.gif) | A pinprick and a tremor, then a twisting double-helix lightning bolt, a white pillar, a dome of light, glowing cracks and a wall of boiling steam. | strands that pass in front of and behind each other, translucent clipped dome |
 | **rumbling** [<sub>gif</sub>](previews/attack-on-titan-rumbling.gif) | A loop of giant footfalls far off: floor rings, dust bursts, racing cracks, hopping pebbles. Each step shakes the whole picture. | an act with only `hits` and `shake`, so the environment, not a character, drives the freeze |
 
+### bleach
+
+| effect | what happens | pixelfx mechanic it leans on |
+|---|---|---|
+| **moon-fang wave** [<sub>gif</sub>](previews/bleach-moon-fang-wave.gif) | Black fire licks off the raised blade. One cut down sends a towering black crescent with a crimson rim and a white-hot edge tearing along the floor, through the target, leaving a trench that cools from white to dull red. | a crescent drawn with a polar shader whose back edge frays on noise, `unlight` so its black core stays black under the glow, `floorScar` |
+| **thousand petals** [<sub>gif</sub>](previews/bleach-thousand-petals.gif) | The blade comes apart from the tip down into 230 petal-blades. A flick of the hilt streams them over to the target, where they close into a whirling sphere, crush in, burst, then flow home and set back into steel. | every petal's path is a function of time (cloud, bezier stream, tilted orbit, return) blended with its own lag; the sphere's far half is drawn behind the target |
+| **release pillar** [<sub>gif</sub>](previews/bleach-release-pillar.gif) | Blade held out, pebbles trembling. Then a pillar of pale pressure erupts to the sky, wound with spiral streams and tearing wind lines, and collapses into him, leaving a black, crimson-edged aura. | a column shader with streak noise, helices split into near and far halves, `band` shock rings, light taken back off his body so he reads as a figure in the glare |
+| **fingertip cero** [<sub>gif</sub>](previews/bleach-fingertip-cero.gif) | Crimson motes stream into a black-rimmed sphere at a raised fingertip, spun round with rings. It fires a black-edged beam with a white heart and shock rings racing down it, and the target explodes. | `STREAK` gathering, a beam shader with a rounded head, `unlight` along its black rim, a hand lined up with the muzzle |
+
+### solo leveling
+
+| effect | what happens | pixelfx mechanic it leans on |
+|---|---|---|
+| **dungeon gate** [<sub>gif</sub>](previews/solo-leveling-dungeon-gate.gif) | A loop: an oval rift of crackling light over a whirlpool that falls away into the dark, motes and floor mist drawn in spiralling. Recolor it red for the bad ones. | a pure `draw(t)` loop: log-spiral shader, rim wobble from `loopNoise`, `cycle` particles, static re-struck 12 times a second |
+| **system window** [<sub>gif</sub>](previews/solo-leveling-system-window.gif) | A point of blue light opens into a line, then a holographic panel: corner brackets glint, a notice types itself in, LEVEL UP flares, a scan line sweeps it. Then it tears into glitched slices and folds away. | translucent glass with `blend`, pixel text typed by time, row-tearing glitch; the words are options (`title`, `head`, `line`) |
+| **ruler's grip** [<sub>gif</sub>](previews/solo-leveling-rulers-grip.gif) | An open palm pushes ripples through the air. A giant hand of violet light wraps the target, fingers in front and behind, while stones lift off the floor. A clench crushes it, a sweep of the arm flings it. | fingers as bands on a tilted ellipse round the target, split by depth into `drawBack` and `draw`; three hits (shiver, crush, fling) |
+| **twin dagger rush** [<sub>gif</sub>](previews/solo-leveling-twin-dagger-rush.gif) | Shadow pools at his feet, then he steps through it round the target four times (`yaw` turns him to face it from behind), a cut at every arrival. He lands past it with his back turned, and only then does the great X tear open. | snapped act keys as teleports, two daggers (`offWeapon`), a delayed X with speed lines, a long freeze on the last hit |
+
+`node anime/run.mjs check` passes all twenty with no failures. A few new ones warn that their glow reaches a little past the
+canvas (a pillar that goes to the sky will do that).
+
 ## where things are
 
 ```
 anime/
   fx/<series>/<name>.js    the effects (same contract as src/fx: meta, create or draw, optional act)
-  fx/_lib.js               ribbons along a path, path glow, manga speed-line bursts, stroke flicker
-  fx/categories.js         the three series, for the gallery
+  fx/_lib.js               ribbons along a path, path glow, manga speed-line bursts, stroke flicker, unlight, floor scars
+  fx/categories.js         the five series, for the gallery
   fx/index.js              generated registry (node anime/build-index.mjs)
   gallery/                 the live viewer: the shared studio pointed at this registry
   run.mjs                  run render / act / check / list / sheets against anime/fx

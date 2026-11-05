@@ -44,7 +44,7 @@ const ALL = [
     id: "anime",
     name: "Anime lab",
     path: "anime/gallery/",
-    blurb: "Demon Slayer, Jujutsu Kaisen and Attack on Titan",
+    blurb: "Demon Slayer, Jujutsu Kaisen, Attack on Titan, Bleach and Solo Leveling",
     mark: `<svg viewBox="0 0 7 7" shape-rendering="crispEdges" aria-hidden="true"><rect x="3" width="1" height="7" fill="#ff6a3d"/><rect y="3" width="7" height="1" fill="#ff6a3d"/><rect x="1" y="1" width="5" height="5" fill="#ff6a3d"/><rect x="2" y="2" width="3" height="3" fill="#fff"/></svg>`,
   },
   {

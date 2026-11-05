@@ -12,6 +12,14 @@ import * as attack_on_titan_odm_swing from "./attack-on-titan/odm-swing.js";
 import * as attack_on_titan_rumbling from "./attack-on-titan/rumbling.js";
 import * as attack_on_titan_thunder_spear from "./attack-on-titan/thunder-spear.js";
 import * as attack_on_titan_titan_shift from "./attack-on-titan/titan-shift.js";
+import * as bleach_fingertip_cero from "./bleach/fingertip-cero.js";
+import * as bleach_moon_fang_wave from "./bleach/moon-fang-wave.js";
+import * as bleach_release_pillar from "./bleach/release-pillar.js";
+import * as bleach_thousand_petals from "./bleach/thousand-petals.js";
+import * as solo_leveling_dungeon_gate from "./solo-leveling/dungeon-gate.js";
+import * as solo_leveling_rulers_grip from "./solo-leveling/rulers-grip.js";
+import * as solo_leveling_system_window from "./solo-leveling/system-window.js";
+import * as solo_leveling_twin_dagger_rush from "./solo-leveling/twin-dagger-rush.js";
 
 export { categories } from "./categories.js";
 
@@ -28,4 +36,12 @@ export const effects = {
   "attack-on-titan/rumbling": attack_on_titan_rumbling,
   "attack-on-titan/thunder-spear": attack_on_titan_thunder_spear,
   "attack-on-titan/titan-shift": attack_on_titan_titan_shift,
+  "bleach/fingertip-cero": bleach_fingertip_cero,
+  "bleach/moon-fang-wave": bleach_moon_fang_wave,
+  "bleach/release-pillar": bleach_release_pillar,
+  "bleach/thousand-petals": bleach_thousand_petals,
+  "solo-leveling/dungeon-gate": solo_leveling_dungeon_gate,
+  "solo-leveling/rulers-grip": solo_leveling_rulers_grip,
+  "solo-leveling/system-window": solo_leveling_system_window,
+  "solo-leveling/twin-dagger-rush": solo_leveling_twin_dagger_rush,
 };
